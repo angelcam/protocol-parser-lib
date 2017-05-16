@@ -10,4 +10,5 @@ setup(
     url="https://bitbucket.org/angelcam/protocol-parser-lib/",
     license="MIT",
     long_description=open('README.md').read(),
+    test_requirements=['pytest', ]
 )
