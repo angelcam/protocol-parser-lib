@@ -1,8 +1,25 @@
 import re
-from protocol.protocol import HttpLikeRequestReader, HttpLikeResponseReader
+
+from .protocol import HttpLikeRequestReader, HttpLikeResponseReader
 
 
-class RtspRequestReader(HttpLikeRequestReader):
+class HttpMixin:
+
+    def is_chunked(self):
+        if self.version == "1.1":
+            tencoding = self.get_header(b"transfer-encoding")
+            if tencoding:
+                tencoding = tencoding.value.lower()
+                return tencoding != b"identity"
+        return False
+
+    def is_persistent(self):
+        if self.version == "1.1":
+            return super().is_persistent()
+        return False
+
+
+class HttpRequestReader(HttpMixin, HttpLikeRequestReader):
     """
     HTTP request reader protocol.
 
@@ -15,10 +32,11 @@ class RtspRequestReader(HttpLikeRequestReader):
     internal_error(self, msg): This method is called when internal server error occurred.
     close_connection(self): This method is called whenever the underlying connection should be closed.
     """
-    first_line_re = re.compile(r"^(?P<method>\S+) (?P<url>\S*) RTSP/(?P<version>\d\.\d)$")
+
+    first_line_re = re.compile(r"^(?P<method>\S+) (?P<url>\S*) HTTP/(?P<version>\d\.\d)$")
 
 
-class RtspResponseReader(HttpLikeResponseReader):
+class HttpResponseReader(HttpMixin, HttpLikeResponseReader):
     """
     HTTP response reader protocol.
 
@@ -32,4 +50,4 @@ class RtspResponseReader(HttpLikeResponseReader):
     close_connection(self): This method is called whenever the underlying connection should be closed.
     """
 
-    first_line_re = re.compile(r"^RTSP/(?P<version>\d\.\d) (?P<status_code>\d{3}) (?P<reason_phrase>.*)$")
+    first_line_re = re.compile(r"^HTTP/(?P<version>\d\.\d) (?P<status_code>\d{3}) (?P<reason_phrase>.*)$")

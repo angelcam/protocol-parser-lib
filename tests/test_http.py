@@ -1,5 +1,5 @@
-from protocol.http import HttpRequestReader
-from protocol.http import HttpResponseReader
+from protocolparser.http import HttpRequestReader
+from protocolparser.http import HttpResponseReader
 
 
 class TestRequest:

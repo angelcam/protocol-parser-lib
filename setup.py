@@ -1,4 +1,6 @@
-from distutils.core import setup
+#!/usr/bin/env python
+
+from setuptools import setup, find_packages
 
 setup(
     name="protocolparser",
@@ -9,6 +11,9 @@ setup(
     author_email="dev@angelcam.com",
     url="https://bitbucket.org/angelcam/protocol-parser-lib/",
     license="MIT",
+    packages=find_packages(),
     long_description=open('README.md').read(),
-    test_requirements=['pytest', ]
+    test_requirements=['pytest', ],
+    include_package_data=True,
+    platforms='any',
 )
