@@ -378,6 +378,8 @@ class HttpLikeMessageReader(LineReader):
         m = self.first_line_re.match(line)
         if m:
             for name, value in m.groupdict().items():
+                if name == 'status_code':
+                    value = int(value)
                 setattr(self, name, value)
         else:
             self.parse_error('invalid first line')
